@@ -50,27 +50,52 @@ Which publishers are the most successful in terms of global sales?
 
 SQL:
 ```sql
-
+SELECT
+    publisher,
+    SUM(global_sales) AS total_sales
+FROM vgsales
+GROUP BY publisher
+ORDER BY total_sales DESC;
 ```
 Findings:
 ```findings
-
+Nintendo is most successful publishers
 ```
 How does success vary across regions (North America, Europe, Japan, Others)?
 
 SQL:
 ```sql
-
+SELECT
+    SUM(na_sales) AS total_north_america_sales,
+    SUM(eu_sales) AS total_europe_sales,
+    SUM(jp_sales) AS total_japan_sales,
+    SUM(other_sales) AS total_other_sales
+FROM
+    vgsales;
 ```
 Findings:
 ```findings
-
+Total North America Sales is 4392.950000000332
+Total Europe Sales is 2434.13000000055
+Total Japan Sales is 1291.0199999999018
+Total Other sales is 797.7499999998826
 ```
 What are the trends over time in game sales by genre and platform?
 
 SQL:
 ```sql
-
+SELECT
+    year,
+    genre,
+    SUM(global_sales) AS total_sales
+FROM
+    vgsales
+WHERE
+    year IS NOT NULL
+GROUP BY
+    year, genre
+ORDER BY
+    year ASC, total_sales DESC;
 ```
 Findings:
 ```findings
@@ -80,11 +105,20 @@ Which platforms are most successful for specific genres?
 
 SQL:
 ```sql
-
+SELECT
+    genre,
+    platform,
+    SUM(global_sales) AS total_sales
+FROM
+    vgsales
+GROUP BY
+    genre, platform
+ORDER BY
+    genre ASC, total_sales DESC;
 ```
 Findings:
 ```findings
-
+PS3 is most successful for Action Genre
 ```
 ## Deliverables:
 - SQL Queries: Provide all the SQL queries you used to answer the business questions.
