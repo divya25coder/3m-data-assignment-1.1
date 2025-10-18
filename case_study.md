@@ -29,7 +29,7 @@ ORDER BY total_sales DESC;
 ```
 Findings:
 ```findings
-
+Action is the hightest
 ```
 Which platforms generate the highest global sales?
 
