@@ -20,7 +20,12 @@ Which genres contribute the most to global sales?
 
 SQL:
 ```sql
-
+SELECT
+  genre,
+  SUM(global_sales)         AS total_sales
+FROM vgsales
+GROUP BY genre
+ORDER BY total_sales DESC;
 ```
 Findings:
 ```findings
