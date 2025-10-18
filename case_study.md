@@ -35,11 +35,16 @@ Which platforms generate the highest global sales?
 
 SQL:
 ```sql
-
+SELECT
+  platform,
+  SUM(global_sales) AS total_sales
+FROM vgsales
+GROUP BY platform
+ORDER BY total_sales DESC;
 ```
 Findings:
 ```findings
-
+PS2 is the highest
 ```
 Which publishers are the most successful in terms of global sales?
 
