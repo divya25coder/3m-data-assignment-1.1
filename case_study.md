@@ -65,20 +65,46 @@ How does success vary across regions (North America, Europe, Japan, Others)?
 
 SQL:
 ```sql
+WITH region_totals AS (
+    SELECT
+        ROUND(SUM(na_sales), 2)    AS na_total,
+        ROUND(SUM(eu_sales), 2)    AS eu_total,
+        ROUND(SUM(jp_sales), 2)    AS jp_total,
+        ROUND(SUM(other_sales), 2) AS other_total,
+        ROUND(SUM(global_sales),2) AS global_total
+    FROM vgsales
+),
+unpivoted AS (
+    SELECT 'North America' AS region, na_total   AS total,
+           (na_total / NULLIF(global_total, 0) * 100) AS pct
+    FROM region_totals
+    UNION ALL
+    SELECT 'Europe' AS region, eu_total AS total,
+           (eu_total / NULLIF(global_total, 0) * 100) AS pct
+    FROM region_totals
+    UNION ALL
+    SELECT 'Japan' AS region, jp_total AS total,
+           (jp_total / NULLIF(global_total, 0) * 100) AS pct
+    FROM region_totals
+    UNION ALL
+    SELECT 'Others' AS region, other_total AS total,
+           (other_total / NULLIF(global_total, 0) * 100) AS pct
+    FROM region_totals
+)
 SELECT
-    SUM(na_sales) AS total_north_america_sales,
-    SUM(eu_sales) AS total_europe_sales,
-    SUM(jp_sales) AS total_japan_sales,
-    SUM(other_sales) AS total_other_sales
-FROM
-    vgsales;
+    region,
+    ROUND(total, 2) AS total_sales,
+    ROUND(pct, 2)   AS share_pct,
+    RANK() OVER (ORDER BY pct DESC) AS rank_by_share
+FROM unpivoted
+ORDER BY rank_by_share;
 ```
 Findings:
 ```findings
-Total North America Sales is 4392.950000000332
-Total Europe Sales is 2434.13000000055
-Total Japan Sales is 1291.0199999999018
-Total Other sales is 797.7499999998826
+Total North America Sales is 4392.950000000332, Share - 49.25, Rank -1
+Total Europe Sales is 2434.13000000055, Share- 27.29, rank -2
+Total Japan Sales is 1291.0199999999018, share- 14.47. rank-3
+Total Other sales is 797.7499999998826,  share- 8.94 , rank-4
 ```
 What are the trends over time in game sales by genre and platform?
 
